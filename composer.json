@@ -19,6 +19,7 @@
     },
     "require": {
         "aportela/httprequest-wrapper": "^1.1",
-        "psr/log": "^3.0"
+        "psr/log": "^3.0",
+        "sybio/image-workshop": "^2.2"
     }
 }
