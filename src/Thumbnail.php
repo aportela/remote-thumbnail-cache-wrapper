@@ -55,4 +55,26 @@ class Thumbnail
             readfile($localFilePath);
         }
     }
+
+    public function getFromLocalFilesystem(string $path, int $width, int $height)
+    {
+        $hash = sha1($path);
+        $localFilePath = sprintf("%s/%dx%d/%s/%s/%s.%s", $this->localBasePath, $width, $height, substr($hash, 0, 1), substr($hash, 1, 1), $hash, self::DEFAULT_OUTPUT_FORMAT_EXTENSION);
+        $this->logger->debug("RemoteThumbnailCacheWrapper::getFromLocalFilesystem - localPath => " . $localFilePath);
+        if (!file_exists($localFilePath)) {
+            if (file_exists($path)) {
+                $this->logger->debug("RemoteThumbnailCacheWrapper::getFromLocalFilesystem - local thumbnail not found... creating...");
+                $thumb = ImageWorkshop::initFromPath($path);
+                if ($thumb->getWidth() > $width) {
+                    $thumb->resizeInPixel($width, null, true);
+                }
+                $thumb->save(dirname($localFilePath), basename($localFilePath), true, null, self::JPEG_IMAGE_QUALITY);
+                readfile($localFilePath);
+            } else {
+                $this->logger->critical("RemoteThumbnailCacheWrapper::getFromLocalFilesystem ERROR: path not found: " . $path);
+            }
+        } else {
+            readfile($localFilePath);
+        }
+    }
 }
