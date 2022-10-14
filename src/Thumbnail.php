@@ -15,13 +15,14 @@ class Thumbnail
     private $hash;
     public $path;
 
-    public function __construct(\Psr\Log\LoggerInterface $logger, string $localBasePath)
+    public function __construct(\Psr\Log\LoggerInterface $logger, string $localBasePath, string $hash = "")
     {
         $this->logger = $logger;
         $this->localBasePath = rtrim($localBasePath, "/");
         if (!file_exists($this->localBasePath)) {
             mkdir($this->localBasePath, 0750);
         }
+        $this->hash = $hash;
         $this->logger->debug("RemoteThumbnailCacheWrapper::__construct");
     }
 
@@ -30,7 +31,7 @@ class Thumbnail
         $this->logger->debug("RemoteThumbnailCacheWrapper::__destruct");
     }
 
-    private function getThumbnailLocalPath(int $width, int $height)
+    public function getThumbnailLocalPath(int $width, int $height)
     {
         return (sprintf("%s/%dx%d/%s/%s/%s.%s", $this->localBasePath, $width, $height, substr($this->hash, 0, 1), substr($this->hash, 1, 1), $this->hash, self::DEFAULT_OUTPUT_FORMAT_EXTENSION));
     }
