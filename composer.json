@@ -9,17 +9,31 @@
             "email": "766f6964+github@gmail.com"
         }
     ],
+    "homepage": "https://github.com/aportela/remote-thumbnail-cache-wrapper",
+
     "autoload": {
         "psr-4": {
             "aportela\\RemoteThumbnailCacheWrapper\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "aportela\\RemoteThumbnailCacheWrapper\\Test\\": "Test"
         }
     },
     "config": {
         "sort-packages": true
     },
     "require": {
-        "aportela/httprequest-wrapper": "^1.1",
+        "php": ">=8.1",
+        "aportela/httprequest-wrapper": "^2.0",
         "psr/log": "^3.0",
         "sybio/image-workshop": "^2.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.3"
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
     }
 }
