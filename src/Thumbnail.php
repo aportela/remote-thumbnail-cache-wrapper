@@ -31,12 +31,12 @@ class Thumbnail
         $this->logger->debug("RemoteThumbnailCacheWrapper::__destruct");
     }
 
-    public function getThumbnailLocalPath(int $width, int $height)
+    public function getThumbnailLocalPath(int $width, int $height): string
     {
         return (sprintf("%s%s%s.%s", implode(DIRECTORY_SEPARATOR, [$this->localBasePath, $width, $height, substr($this->hash, 0, 1), substr($this->hash, 1, 1)]), DIRECTORY_SEPARATOR, $this->hash, self::DEFAULT_OUTPUT_FORMAT_EXTENSION));
     }
 
-    private function createThumbnail($sourcePath, int $width, int $height)
+    private function createThumbnail($sourcePath, int $width, int $height): void
     {
         if (file_exists(($sourcePath))) {
             $thumb = ImageWorkshop::initFromPath($sourcePath);
