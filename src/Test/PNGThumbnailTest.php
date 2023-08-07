@@ -49,7 +49,7 @@ final class PNGThumbnailTest extends \PHPUnit\Framework\TestCase
 
     public function testRemoteNotExistentImage(): void
     {
-        $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail(self::$logger, sys_get_temp_dir());
+        $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, sys_get_temp_dir());
         $thumbnail->setDimensions(64, 43);
         $thumbnail->setQuality(\aportela\RemoteThumbnailCacheWrapper\PNGThumbnail::DEFAULT_IMAGE_QUALITY);
         $this->assertFalse($thumbnail->getFromRemoteURL(self::REMOTE_URL_404));
@@ -58,7 +58,7 @@ final class PNGThumbnailTest extends \PHPUnit\Framework\TestCase
 
     public function testRemoteExistentImage(): void
     {
-        $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail(self::$logger, sys_get_temp_dir());
+        $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, sys_get_temp_dir());
         $thumbnail->setDimensions(64, 43);
         $thumbnail->setQuality(\aportela\RemoteThumbnailCacheWrapper\PNGThumbnail::DEFAULT_IMAGE_QUALITY);
         $this->assertTrue($thumbnail->getFromRemoteURL(self::REMOTE_URL_200));
@@ -68,7 +68,7 @@ final class PNGThumbnailTest extends \PHPUnit\Framework\TestCase
 
     public function testRemoteExistentImageForce(): void
     {
-        $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail(self::$logger, sys_get_temp_dir());
+        $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, sys_get_temp_dir());
         $thumbnail->setDimensions(64, 43);
         $thumbnail->setQuality(\aportela\RemoteThumbnailCacheWrapper\PNGThumbnail::DEFAULT_IMAGE_QUALITY);
         $url = "https://raw.githubusercontent.com/aportela/remote-thumbnail-cache-wrapper/2.0pre/src/Test/200.jpg";
@@ -79,7 +79,7 @@ final class PNGThumbnailTest extends \PHPUnit\Framework\TestCase
 
     public function testLocalNotExistentImage(): void
     {
-        $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail(self::$logger, sys_get_temp_dir());
+        $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, sys_get_temp_dir());
         $thumbnail->setDimensions(64, 43);
         $thumbnail->setQuality(\aportela\RemoteThumbnailCacheWrapper\PNGThumbnail::DEFAULT_IMAGE_QUALITY);
         $this->assertFalse($thumbnail->getFromLocalFilesystem(self::LOCAL_FILE_NOT_EXISTS));
@@ -88,7 +88,7 @@ final class PNGThumbnailTest extends \PHPUnit\Framework\TestCase
 
     public function testLocalExistentImage(): void
     {
-        $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail(self::$logger, sys_get_temp_dir());
+        $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, sys_get_temp_dir());
         $thumbnail->setDimensions(64, 43);
         $thumbnail->setQuality(\aportela\RemoteThumbnailCacheWrapper\PNGThumbnail::DEFAULT_IMAGE_QUALITY);
         $this->assertTrue($thumbnail->getFromLocalFilesystem(self::LOCAL_FILE_EXISTS));
@@ -98,7 +98,7 @@ final class PNGThumbnailTest extends \PHPUnit\Framework\TestCase
 
     public function testLocalExistentImageForce(): void
     {
-        $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail(self::$logger, sys_get_temp_dir());
+        $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, sys_get_temp_dir());
         $thumbnail->setDimensions(64, 43);
         $thumbnail->setQuality(\aportela\RemoteThumbnailCacheWrapper\PNGThumbnail::DEFAULT_IMAGE_QUALITY);
         $this->assertTrue($thumbnail->getFromLocalFilesystem(self::LOCAL_FILE_EXISTS, true));
