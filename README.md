@@ -59,7 +59,7 @@ composer require aportela/remote-thumbnail-cache-wrapper
     $thumbnail->setQuality(\aportela\RemoteThumbnailCacheWrapper\PNGThumbnail::DEFAULT_IMAGE_QUALITY);
 
     if ($thumbnail->getFromLocalFilesystem("/tmp/test.jpg")) {
-        header("Content-Type: image/jpeg");
+        header("Content-Type: image/png");
         readfile($thumbnail->path);
     } else {
         header("HTTP/1.1 404 Not Found");
