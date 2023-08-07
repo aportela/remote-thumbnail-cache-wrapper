@@ -7,7 +7,7 @@ use \PHPImageWorkshop\ImageWorkshop;
 final class PNGThumbnail extends \aportela\RemoteThumbnailCacheWrapper\Thumbnail
 {
     private const OUTPUT_FORMAT_EXTENSION = "png";
-    public const DEFAULT_PNG_IMAGE_QUALITY = 95;
+    public const DEFAULT_IMAGE_QUALITY = 95;
 
     private int $quality;
 
@@ -18,7 +18,7 @@ final class PNGThumbnail extends \aportela\RemoteThumbnailCacheWrapper\Thumbnail
         if (!file_exists($this->localBasePath)) {
             mkdir($this->localBasePath, 0750);
         }
-        $this->quality = self::DEFAULT_PNG_IMAGE_QUALITY;
+        $this->quality = self::DEFAULT_IMAGE_QUALITY;
         $this->logger->debug("RemoteThumbnailCacheWrapper::__construct");
     }
 

@@ -32,7 +32,7 @@ composer require aportela/remote-thumbnail-cache-wrapper
 
     $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail($logger, $localPath);
     $thumbnail->setDimensions(250, 250);
-    $thumbnail->setQuality(\aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail::DEFAULT_JPEG_IMAGE_QUALITY);
+    $thumbnail->setQuality(\aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail::DEFAULT_IMAGE_QUALITY);
 
     if ($thumbnail->getFromRemoteURL("https://i.imgur.com/1bo3VaU.jpeg")) {
         header("Content-Type: image/jpeg");
@@ -54,9 +54,9 @@ composer require aportela/remote-thumbnail-cache-wrapper
     // cached thumbnails will be stored on this path
     $localPath = "./data/";
 
-    $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail($logger, $localPath);
+    $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail($logger, $localPath);
     $thumbnail->setDimensions(250, 250);
-    $thumbnail->setQuality(\aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail::DEFAULT_JPEG_IMAGE_QUALITY);
+    $thumbnail->setQuality(\aportela\RemoteThumbnailCacheWrapper\PNGThumbnail::DEFAULT_IMAGE_QUALITY);
 
     if ($thumbnail->getFromLocalFilesystem("/tmp/test.jpg")) {
         header("Content-Type: image/jpeg");
