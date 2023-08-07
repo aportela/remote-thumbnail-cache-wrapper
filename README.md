@@ -65,3 +65,5 @@ composer require aportela/remote-thumbnail-cache-wrapper
         header("HTTP/1.1 404 Not Found");
     }
 ```
+
+![PHP Composer](https://github.com/aportela/remote-thumbnail-cache-wrapper/actions/workflows/php.yml/badge.svg)
