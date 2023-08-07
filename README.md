@@ -10,7 +10,7 @@ generate & cache thumbnails of remote & local images
 
 ## Limitations
 
-At this time only JPEG format is supported.
+At this time only JPEG & PNG formats are supported.
 
 ## Install (composer) dependencies:
 

@@ -3,6 +3,7 @@
     <testsuites>
         <testsuite name="remote-thumbnail-cache-wrapper-test-suite">
             <file>src/Test/JPEGThumbnailTest.php</file>
+            <file>src/Test/PNGThumbnailTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
