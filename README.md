@@ -1,28 +1,40 @@
 # remote-thumbnail-cache-wrapper
- generate & cache thumbnails of remote images
+
+generate & cache thumbnails of remote & local images
+
+## Requirements
+
+- mininum php version 8.x
+- curl extension must be enabled
+- gd extension must be enabled
+
+## Limitations
+
+At this time only JPEG format is supported.
 
 ## Install (composer) dependencies:
 
 ```
 composer require aportela/remote-thumbnail-cache-wrapper
-composer require monolog/monolog
 ```
 
-# Code example (from remote picture):
+## Code example (from remote picture):
 
 ```
 <?php
 
     require "vendor/autoload.php";
 
-    $logger = new \Monolog\Logger("remote-thumbnail-cache-wrapper");
+    $logger = new \Psr\Log\NullLogger("");
 
     // cached thumbnails will be stored on this path
     $localPath = "./data/";
 
-    $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\Thumbnail($logger, $localPath);
+    $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail($logger, $localPath);
+    $thumbnail->setDimensions(250, 250);
+    $thumbnail->setQuality(\aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail::DEFAULT_JPEG_IMAGE_QUALITY);
 
-    if ($thumbnail->getFromRemoteURL("https://i.imgur.com/1bo3VaU.jpeg", 250, 250)) {
+    if ($thumbnail->getFromRemoteURL("https://i.imgur.com/1bo3VaU.jpeg")) {
         header("Content-Type: image/jpeg");
         readfile($thumbnail->path);
     } else {
@@ -37,14 +49,16 @@ composer require monolog/monolog
 
     require "vendor/autoload.php";
 
-    $logger = new \Monolog\Logger("remote-thumbnail-cache-wrapper");
+    $logger = new \Psr\Log\NullLogger("");
 
     // cached thumbnails will be stored on this path
     $localPath = "./data/";
 
-    $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\Thumbnail($logger, $localPath);
+    $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail($logger, $localPath);
+    $thumbnail->setDimensions(250, 250);
+    $thumbnail->setQuality(\aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail::DEFAULT_JPEG_IMAGE_QUALITY);
 
-    if ($thumbnail->getFromLocalFilesystem("/tmp/test.jpg", 250, 250)) {
+    if ($thumbnail->getFromLocalFilesystem("/tmp/test.jpg")) {
         header("Content-Type: image/jpeg");
         readfile($thumbnail->path);
     } else {
