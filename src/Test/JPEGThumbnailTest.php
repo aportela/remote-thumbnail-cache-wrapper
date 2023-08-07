@@ -6,7 +6,7 @@ namespace aportela\RemoteThumbnailCacheWrapper\Test;
 
 require_once dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . "vendor" . DIRECTORY_SEPARATOR . "autoload.php";
 
-class ThumbnailTest extends \PHPUnit\Framework\TestCase
+class JPEGThumbnailTest extends \PHPUnit\Framework\TestCase
 {
     protected static $logger;
 

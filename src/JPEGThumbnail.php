@@ -4,7 +4,7 @@ namespace aportela\RemoteThumbnailCacheWrapper;
 
 use \PHPImageWorkshop\ImageWorkshop;
 
-class Thumbnail
+class JPEGThumbnail
 {
 
     protected const OUTPUT_FORMAT_EXTENSION = "jpg";
