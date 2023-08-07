@@ -4,16 +4,12 @@ namespace aportela\RemoteThumbnailCacheWrapper;
 
 use \PHPImageWorkshop\ImageWorkshop;
 
-class JPEGThumbnail
+final class JPEGThumbnail extends \aportela\RemoteThumbnailCacheWrapper\Thumbnail
 {
-
-    protected const OUTPUT_FORMAT_EXTENSION = "jpg";
+    private const OUTPUT_FORMAT_EXTENSION = "jpg";
     public const DEFAULT_JPEG_IMAGE_QUALITY = 95;
 
-    protected \Psr\Log\LoggerInterface $logger;
-    private string $localBasePath;
-    private string $hash;
-    public $path;
+    private int $quality;
 
     public function __construct(\Psr\Log\LoggerInterface $logger, string $localBasePath)
     {
@@ -22,6 +18,7 @@ class JPEGThumbnail
         if (!file_exists($this->localBasePath)) {
             mkdir($this->localBasePath, 0750);
         }
+        $this->quality = self::DEFAULT_JPEG_IMAGE_QUALITY;
         $this->logger->debug("RemoteThumbnailCacheWrapper::__construct");
     }
 
@@ -30,12 +27,17 @@ class JPEGThumbnail
         $this->logger->debug("RemoteThumbnailCacheWrapper::__destruct");
     }
 
-    private function getThumbnailLocalPath(int $width, int $height, int $quality): string
+    public function setQuality(int $quality)
     {
-        return (sprintf("%s%s%s.%s", implode(DIRECTORY_SEPARATOR, [$this->localBasePath, $quality, $width, $height, substr($this->hash, 0, 1), substr($this->hash, 1, 1)]), DIRECTORY_SEPARATOR, $this->hash, self::OUTPUT_FORMAT_EXTENSION));
+        $this->quality = $quality;
     }
 
-    private function createThumbnail($sourcePath, int $width, int $height, int $jpegImageQuality): void
+    private function getThumbnailLocalPath(int $width, int $height, int $quality, string $hash): string
+    {
+        return (sprintf("%s%s%s.%s", implode(DIRECTORY_SEPARATOR, [$this->localBasePath, $quality, $width, $height, substr($hash, 0, 1), substr($hash, 1, 1)]), DIRECTORY_SEPARATOR, $hash, self::OUTPUT_FORMAT_EXTENSION));
+    }
+
+    private function createThumbnail($sourcePath, int $width, int $height, int $jpegImageQuality, string $hash): void
     {
         if (file_exists(($sourcePath))) {
             $thumb = ImageWorkshop::initFromPath($sourcePath);
@@ -43,7 +45,7 @@ class JPEGThumbnail
                 $thumb->resizeInPixel($width, null, true);
             }
             $this->logger->debug("RemoteThumbnailCacheWrapper::createThumbnail (width: " . $width . " / height: " . $height . " / quality: " . $jpegImageQuality . ")");
-            $destPath = $this->getThumbnailLocalPath($width, $height, $jpegImageQuality);
+            $destPath = $this->getThumbnailLocalPath($width, $height, $jpegImageQuality, $hash);
             if (file_exists($destPath)) {
                 unlink($destPath);
             }
@@ -53,10 +55,10 @@ class JPEGThumbnail
         }
     }
 
-    public function getFromRemoteURL(string $url, int $width, int $height, int $jpegImageQuality = self::DEFAULT_JPEG_IMAGE_QUALITY, bool $force = false): bool
+    public function getFromRemoteURL(string $url, bool $force = false): bool
     {
-        $this->hash = sha1($url);
-        $localFilePath = $this->getThumbnailLocalPath($width, $height, $jpegImageQuality);
+        $hash = sha1($url);
+        $localFilePath = $this->getThumbnailLocalPath($this->width, $this->height, $this->quality, $hash);
         $this->logger->debug("RemoteThumbnailCacheWrapper::getFromRemoteURL - localPath => " . $localFilePath);
         if ($force && file_exists($localFilePath)) {
             $this->logger->debug("RemoteThumbnailCacheWrapper::getFromLocalFilesystem - removing current thumbnail => " . $localFilePath);
@@ -69,7 +71,7 @@ class JPEGThumbnail
             if ($response->code == 200) {
                 $tmpFile = tempnam(sys_get_temp_dir(), "axl");
                 file_put_contents($tmpFile, $response->body);
-                $this->createThumbnail($tmpFile, $width, $height, $jpegImageQuality);
+                $this->createThumbnail($tmpFile, $this->width, $this->height, $this->quality, $hash);
                 unlink($tmpFile);
                 $this->path = $localFilePath;
                 return (true);
@@ -83,10 +85,10 @@ class JPEGThumbnail
         }
     }
 
-    public function getFromLocalFilesystem(string $path, int $width, int $height, int $jpegImageQuality = self::DEFAULT_JPEG_IMAGE_QUALITY, bool $force = false): bool
+    public function getFromLocalFilesystem(string $path, bool $force = false): bool
     {
-        $this->hash = sha1($path);
-        $localFilePath = $this->getThumbnailLocalPath($width, $height, $jpegImageQuality);
+        $hash = sha1($path);
+        $localFilePath = $this->getThumbnailLocalPath($this->width, $this->height, $this->quality, $hash);
         $this->logger->debug("RemoteThumbnailCacheWrapper::getFromLocalFilesystem - localPath => " . $localFilePath);
         if ($force && file_exists($localFilePath)) {
             $this->logger->debug("RemoteThumbnailCacheWrapper::getFromLocalFilesystem - removing current thumbnail => " . $localFilePath);
@@ -95,7 +97,7 @@ class JPEGThumbnail
         if (!file_exists($localFilePath)) {
             if (file_exists($path)) {
                 $this->logger->debug("RemoteThumbnailCacheWrapper::getFromLocalFilesystem - local thumbnail not found... creating...");
-                $this->createThumbnail($path, $width, $height, $jpegImageQuality);
+                $this->createThumbnail($path, $this->width, $this->height, $this->quality, $hash);
                 $this->path = $localFilePath;
                 return (true);
             } else {

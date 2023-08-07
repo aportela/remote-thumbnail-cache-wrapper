@@ -43,17 +43,21 @@ class JPEGThumbnailTest extends \PHPUnit\Framework\TestCase
     public function testRemoteNotExistentImage(): void
     {
         $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail(self::$logger, sys_get_temp_dir());
+        $thumbnail->setDimensions(64, 43);
+        $thumbnail->setQuality(\aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail::DEFAULT_JPEG_IMAGE_QUALITY);
         $url = "https://raw.githubusercontent.com/aportela/remote-thumbnail-cache-wrapper/2.0pre/src/Test/404.jpg";
-        $this->assertFalse($thumbnail->getFromRemoteURL($url, 64, 43, \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail::DEFAULT_JPEG_IMAGE_QUALITY));
-        $this->assertEmpty($thumbnail->path);
+        $this->assertFalse($thumbnail->getFromRemoteURL($url));
+        $this->assertNull($thumbnail->path);
     }
 
     public function testRemoteExistentImage(): void
     {
         $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail(self::$logger, sys_get_temp_dir());
+        $thumbnail->setDimensions(64, 43);
+        $thumbnail->setQuality(\aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail::DEFAULT_JPEG_IMAGE_QUALITY);
         // image credits: https://unsplash.com/es/fotos/89xuP-XmyrA (Caspar Camille Rubin)
         $url = "https://raw.githubusercontent.com/aportela/remote-thumbnail-cache-wrapper/2.0pre/src/Test/200.jpg";
-        $this->assertTrue($thumbnail->getFromRemoteURL($url, 64, 43, \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail::DEFAULT_JPEG_IMAGE_QUALITY));
+        $this->assertTrue($thumbnail->getFromRemoteURL($url));
         $this->assertNotEmpty($thumbnail->path);
         $this->assertFileExists($thumbnail->path);
     }
@@ -61,9 +65,11 @@ class JPEGThumbnailTest extends \PHPUnit\Framework\TestCase
     public function testRemoteExistentImageForce(): void
     {
         $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail(self::$logger, sys_get_temp_dir());
+        $thumbnail->setDimensions(64, 43);
+        $thumbnail->setQuality(\aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail::DEFAULT_JPEG_IMAGE_QUALITY);
         // image credits: https://unsplash.com/es/fotos/89xuP-XmyrA (Caspar Camille Rubin)
         $url = "https://raw.githubusercontent.com/aportela/remote-thumbnail-cache-wrapper/2.0pre/src/Test/200.jpg";
-        $this->assertTrue($thumbnail->getFromRemoteURL($url, 64, 43, \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail::DEFAULT_JPEG_IMAGE_QUALITY, true));
+        $this->assertTrue($thumbnail->getFromRemoteURL($url, true));
         $this->assertNotEmpty($thumbnail->path);
         $this->assertFileExists($thumbnail->path);
     }
@@ -71,17 +77,21 @@ class JPEGThumbnailTest extends \PHPUnit\Framework\TestCase
     public function testLocalNotExistentImage(): void
     {
         $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail(self::$logger, sys_get_temp_dir());
+        $thumbnail->setDimensions(64, 43);
+        $thumbnail->setQuality(\aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail::DEFAULT_JPEG_IMAGE_QUALITY);
         $localFile = sprintf("%s%s%s", __DIR__, DIRECTORY_SEPARATOR, "400.jpg");
-        $this->assertFalse($thumbnail->getFromLocalFilesystem($localFile, 64, 43, \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail::DEFAULT_JPEG_IMAGE_QUALITY));
-        $this->assertEmpty($thumbnail->path);
+        $this->assertFalse($thumbnail->getFromLocalFilesystem($localFile));
+        $this->assertNull($thumbnail->path);
     }
 
     public function testLocalExistentImage(): void
     {
         $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail(self::$logger, sys_get_temp_dir());
+        $thumbnail->setDimensions(64, 43);
+        $thumbnail->setQuality(\aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail::DEFAULT_JPEG_IMAGE_QUALITY);
         // image credits: https://unsplash.com/es/fotos/89xuP-XmyrA (Caspar Camille Rubin)
         $localFile = sprintf("%s%s%s", __DIR__, DIRECTORY_SEPARATOR, "200.jpg");
-        $this->assertTrue($thumbnail->getFromLocalFilesystem($localFile, 64, 43, \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail::DEFAULT_JPEG_IMAGE_QUALITY));
+        $this->assertTrue($thumbnail->getFromLocalFilesystem($localFile));
         $this->assertNotEmpty($thumbnail->path);
         $this->assertFileExists($thumbnail->path);
     }
@@ -89,9 +99,11 @@ class JPEGThumbnailTest extends \PHPUnit\Framework\TestCase
     public function testLocalExistentImageForce(): void
     {
         $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail(self::$logger, sys_get_temp_dir());
+        $thumbnail->setDimensions(64, 43);
+        $thumbnail->setQuality(\aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail::DEFAULT_JPEG_IMAGE_QUALITY);
         // image credits: https://unsplash.com/es/fotos/89xuP-XmyrA (Caspar Camille Rubin)
         $localFile = sprintf("%s%s%s", __DIR__, DIRECTORY_SEPARATOR, "200.jpg");
-        $this->assertTrue($thumbnail->getFromLocalFilesystem($localFile, 64, 43, \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail::DEFAULT_JPEG_IMAGE_QUALITY, true));
+        $this->assertTrue($thumbnail->getFromLocalFilesystem($localFile, true));
         $this->assertNotEmpty($thumbnail->path);
         $this->assertFileExists($thumbnail->path);
     }
