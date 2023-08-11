@@ -2,7 +2,7 @@
 
 namespace aportela\RemoteThumbnailCacheWrapper;
 
-use \PHPImageWorkshop\ImageWorkshop;
+use PHPImageWorkshop\ImageWorkshop;
 
 final class PNGThumbnail extends \aportela\RemoteThumbnailCacheWrapper\Thumbnail
 {

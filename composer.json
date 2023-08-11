@@ -31,9 +31,11 @@
         "sybio/image-workshop": "^2.2"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.22",
         "phpunit/phpunit": "^10.3"
     },
     "scripts": {
+        "fix" : "vendor/bin/php-cs-fixer fix src",
         "test": "vendor/bin/phpunit"
     }
 }
