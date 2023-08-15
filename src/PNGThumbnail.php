@@ -109,4 +109,17 @@ final class PNGThumbnail extends \aportela\RemoteThumbnailCacheWrapper\Thumbnail
             return (true);
         }
     }
+
+    public function getFromCache(string $hash): bool
+    {
+        $localFilePath = $this->getThumbnailLocalPath($this->width, $this->height, $this->quality, $hash);
+        $this->logger->debug("RemoteThumbnailCacheWrapper::getFromCache - localPath => " . $localFilePath);
+        if (file_exists($localFilePath)) {
+            $this->path = $localFilePath;
+            return (true);
+        } else {
+            $this->logger->critical("RemoteThumbnailCacheWrapper::getFromLocalFilesystem ERROR: path not found: " . $localFilePath);
+            return (false);
+        }
+    }
 }
