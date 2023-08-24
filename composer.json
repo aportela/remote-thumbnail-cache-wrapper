@@ -2,7 +2,7 @@
     "name": "aportela/remote-thumbnail-cache-wrapper",
     "description": "generate & cache thumbnails of remote images",
     "type": "library",
-    "license": "GPL-3.0-only",
+    "license": "AGPL-3.0-only",
     "authors": [
         {
             "name": "alex",
