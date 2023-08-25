@@ -10,6 +10,7 @@ final class JPEGThumbnailTest extends \PHPUnit\Framework\TestCase
 {
     // image credits: https://unsplash.com/es/fotos/89xuP-XmyrA (Caspar Camille Rubin)
     private const REMOTE_URL_200 = "https://raw.githubusercontent.com/aportela/remote-thumbnail-cache-wrapper/main/src/Test/200.jpg";
+    private const REMOTE_URL_200_NOT_IMAGE = "https://raw.githubusercontent.com/aportela/remote-thumbnail-cache-wrapper/main/README.md";
     private const REMOTE_URL_404 = "https://raw.githubusercontent.com/aportela/remote-thumbnail-cache-wrapper/main/src/Test/404.jpg";
     // image credits: https://unsplash.com/es/fotos/89xuP-XmyrA (Caspar Camille Rubin)
     private const LOCAL_FILE_EXISTS = __DIR__ . DIRECTORY_SEPARATOR . "200.jpg";
@@ -61,6 +62,16 @@ final class JPEGThumbnailTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($thumbnail->path);
     }
 
+    public function testRemoteExistsNotImage(): void
+    {
+        $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail(self::$logger, self::$baseDir);
+        $thumbnail->setDimensions(64, 43);
+        $thumbnail->setQuality(\aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail::DEFAULT_IMAGE_QUALITY);
+        $this->assertFalse($thumbnail->remoteURLExistsInCache(self::REMOTE_URL_200_NOT_IMAGE));
+        $this->assertFalse($thumbnail->getFromRemoteURL(self::REMOTE_URL_200_NOT_IMAGE));
+        $this->assertFalse($thumbnail->remoteURLExistsInCache(self::REMOTE_URL_200_NOT_IMAGE));
+        $this->assertEmpty($thumbnail->path);
+    }
     public function testRemoteExistsImage(): void
     {
         $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail(self::$logger, self::$baseDir);

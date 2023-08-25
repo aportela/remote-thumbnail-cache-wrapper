@@ -87,12 +87,16 @@ final class PNGThumbnail extends \aportela\RemoteThumbnailCacheWrapper\Thumbnail
             $http = new \aportela\HTTPRequestWrapper\HTTPRequest($this->logger);
             $response = $http->GET($url);
             if ($response->code == 200) {
-                $tmpFile = tempnam(sys_get_temp_dir(), "axl");
-                file_put_contents($tmpFile, $response->body);
-                $this->createThumbnail($tmpFile, $this->width, $this->height, $this->quality, $hash);
-                unlink($tmpFile);
-                $this->path = $localFilePath;
-                return (true);
+                if (in_array($response->getContentType(), ["image/jpeg", "image/png"])) {
+                    $tmpFile = tempnam(sys_get_temp_dir(), "axl");
+                    file_put_contents($tmpFile, $response->body);
+                    $this->createThumbnail($tmpFile, $this->width, $this->height, $this->quality, $hash);
+                    unlink($tmpFile);
+                    $this->path = $localFilePath;
+                    return (true);
+                } else {
+                    return (false);
+                }
             } else {
                 $this->logger->critical("RemoteThumbnailCacheWrapper::getFromRemoteURL ERROR: Invalid remote HTTP code: " . $response->code);
                 return (false);
