@@ -97,7 +97,9 @@ final class PNGThumbnailTest extends \PHPUnit\Framework\TestCase
         $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, self::$baseDir);
         $thumbnail->setDimensions(64, 43);
         $thumbnail->setQuality(\aportela\RemoteThumbnailCacheWrapper\PNGThumbnail::DEFAULT_IMAGE_QUALITY);
+        $this->assertFalse($thumbnail->localFilesystemExistsInCache(self::LOCAL_FILE_EXISTS));
         $this->assertTrue($thumbnail->getFromLocalFilesystem(self::LOCAL_FILE_EXISTS));
+        $this->assertTrue($thumbnail->localFilesystemExistsInCache(self::LOCAL_FILE_EXISTS));
         $this->assertNotEmpty($thumbnail->path);
         $this->assertFileExists($thumbnail->path);
     }

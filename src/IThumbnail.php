@@ -10,5 +10,7 @@ interface iThumbnail
 
     public function remoteURLExistsInCache(string $url): bool;
 
+    public function localFilesystemExistsInCache(string $path): bool;
+
     public function getFromCache(string $hash): bool;
 }
