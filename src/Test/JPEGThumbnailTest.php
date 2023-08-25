@@ -72,6 +72,7 @@ final class JPEGThumbnailTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($thumbnail->remoteURLExistsInCache(self::REMOTE_URL_200_NOT_IMAGE));
         $this->assertEmpty($thumbnail->path);
     }
+
     public function testRemoteExistsImage(): void
     {
         $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail(self::$logger, self::$baseDir);
