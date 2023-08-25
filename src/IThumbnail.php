@@ -8,5 +8,7 @@ interface iThumbnail
 
     public function getFromLocalFilesystem(string $path, bool $force = false): bool;
 
+    public function remoteURLExistsInCache(string $url): bool;
+
     public function getFromCache(string $hash): bool;
 }

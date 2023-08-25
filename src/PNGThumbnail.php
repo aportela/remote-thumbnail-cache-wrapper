@@ -37,6 +37,15 @@ final class PNGThumbnail extends \aportela\RemoteThumbnailCacheWrapper\Thumbnail
         return (sprintf("%s%s%s.%s", implode(DIRECTORY_SEPARATOR, [$this->localBasePath, $quality, $width, $height, substr($hash, 0, 1), substr($hash, 1, 1)]), DIRECTORY_SEPARATOR, $hash, self::OUTPUT_FORMAT_EXTENSION));
     }
 
+    public function remoteURLExistsInCache(string $url): bool
+    {
+        if ($this->width > 0 && $this->height > 0 && $this->quality > 0) {
+            return (file_exists($this->getThumbnailLocalPath($this->width, $this->height, $this->quality, sha1($url))));
+        } else {
+            return (false);
+        }
+    }
+
     private function createThumbnail($sourcePath, int $width, int $height, int $quality, string $hash): void
     {
         if (file_exists(($sourcePath))) {
