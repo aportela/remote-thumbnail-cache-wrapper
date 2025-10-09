@@ -25,7 +25,7 @@ abstract class Thumbnail implements \aportela\RemoteThumbnailCacheWrapper\IThumb
         $this->logger->debug("RemoteThumbnailCacheWrapper::__destruct");
     }
 
-    public function setDimensions(int $width, int $height)
+    public function setDimensions(int $width, int $height): void
     {
         $this->width = $width;
         $this->height = $height;

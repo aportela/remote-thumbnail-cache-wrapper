@@ -2,7 +2,7 @@
 
 namespace aportela\RemoteThumbnailCacheWrapper;
 
-interface iThumbnail
+interface IThumbnail
 {
     public function getFromRemoteURL(string $url, bool $force = false): bool;
 

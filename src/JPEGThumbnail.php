@@ -27,7 +27,7 @@ final class JPEGThumbnail extends \aportela\RemoteThumbnailCacheWrapper\Thumbnai
         $this->logger->debug("RemoteThumbnailCacheWrapper::__destruct");
     }
 
-    public function setQuality(int $quality)
+    public function setQuality(int $quality): void
     {
         $this->quality = $quality;
     }
@@ -55,7 +55,7 @@ final class JPEGThumbnail extends \aportela\RemoteThumbnailCacheWrapper\Thumbnai
         }
     }
 
-    private function createThumbnail($sourcePath, int $width, int $height, int $jpegImageQuality, string $hash): void
+    private function createThumbnail(string $sourcePath, int $width, int $height, int $jpegImageQuality, string $hash): void
     {
         if (file_exists(($sourcePath))) {
             $thumb = ImageWorkshop::initFromPath($sourcePath);

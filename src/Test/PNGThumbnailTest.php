@@ -16,7 +16,7 @@ final class PNGThumbnailTest extends \PHPUnit\Framework\TestCase
     private const LOCAL_FILE_EXISTS = __DIR__ . DIRECTORY_SEPARATOR . "200.jpg";
     private const LOCAL_FILE_NOT_EXISTS = __DIR__ . DIRECTORY_SEPARATOR . "400.jpg";
 
-    protected static $logger;
+    protected static \Psr\Log\NullLogger $logger;
     protected static string $baseDir;
 
     /**
@@ -24,7 +24,7 @@ final class PNGThumbnailTest extends \PHPUnit\Framework\TestCase
      */
     public static function setUpBeforeClass(): void
     {
-        self::$logger = new \Psr\Log\NullLogger("");
+        self::$logger = new \Psr\Log\NullLogger();
         $newPath = tempnam(sys_get_temp_dir(), 'xyz');
         unlink($newPath);
         mkdir($newPath);
