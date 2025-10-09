@@ -4,7 +4,7 @@ generate & cache thumbnails of remote & local images
 
 ## Requirements
 
-- mininum php version 8.x
+- mininum php version 8.4
 - curl extension must be enabled
 - gd extension must be enabled
 
