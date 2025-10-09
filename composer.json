@@ -1,43 +1,42 @@
 {
-    "name": "aportela/remote-thumbnail-cache-wrapper",
-    "description": "generate & cache thumbnails of remote images",
-    "type": "library",
-    "license": "AGPL-3.0-only",
-    "authors": [
-        {
-            "name": "alex",
-            "email": "766f6964+github@gmail.com"
-        }
-    ],
-    "homepage": "https://github.com/aportela/remote-thumbnail-cache-wrapper",
-
-    "autoload": {
-        "psr-4": {
-            "aportela\\RemoteThumbnailCacheWrapper\\": "src"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "aportela\\RemoteThumbnailCacheWrapper\\Test\\": "Test"
-        }
-    },
-    "config": {
-        "sort-packages": true
-    },
-    "require": {
-        "php": ">=8.1",
-        "aportela/httprequest-wrapper": "^2.0",
-        "psr/log": "^3.0",
-        "sybio/image-workshop": "^2.2"
-    },
-    "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.45",
-        "phpstan/phpstan": "^1.10",
-        "phpunit/phpunit": "^10.5"
-    },
-    "scripts": {
-        "test": "vendor/bin/phpunit --testdox",
-        "fix" : "vendor/bin/php-cs-fixer fix src",
-        "stan": "vendor/bin/phpstan analyse -c phpstan.neon"
+  "name": "aportela/remote-thumbnail-cache-wrapper",
+  "description": "generate & cache thumbnails of remote images",
+  "type": "library",
+  "license": "AGPL-3.0-only",
+  "authors": [
+    {
+      "name": "alex",
+      "email": "766f6964+github@gmail.com"
     }
+  ],
+  "homepage": "https://github.com/aportela/remote-thumbnail-cache-wrapper",
+  "autoload": {
+    "psr-4": {
+      "aportela\\RemoteThumbnailCacheWrapper\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "aportela\\RemoteThumbnailCacheWrapper\\Test\\": "Test"
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "require": {
+    "php": ">=8.4",
+    "aportela/httprequest-wrapper": "^2.1",
+    "psr/log": "^3.0",
+    "sybio/image-workshop": "^2.2"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^3.88",
+    "phpstan/phpstan": "^2.1",
+    "phpunit/phpunit": "^10.5"
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit --testdox",
+    "fix": "vendor/bin/php-cs-fixer fix src",
+    "stan": "vendor/bin/phpstan analyse -c phpstan.neon"
+  }
 }
