@@ -44,7 +44,7 @@ composer require aportela/remote-thumbnail-cache-wrapper
 
 # Code example (from local filesystem picture):
 
-```
+```php
 <?php
 
     require "vendor/autoload.php";
