@@ -14,13 +14,13 @@ At this time only JPEG & PNG formats are supported.
 
 ## Install (composer) dependencies:
 
-```
+```Shell
 composer require aportela/remote-thumbnail-cache-wrapper
 ```
 
 ## Code example (from remote picture):
 
-```
+```php
 <?php
 
     require "vendor/autoload.php";
