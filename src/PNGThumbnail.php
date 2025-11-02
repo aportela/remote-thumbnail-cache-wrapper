@@ -29,7 +29,12 @@ final class PNGThumbnail extends \aportela\RemoteThumbnailCacheWrapper\BaseThumb
 
     public function setQuality(int $quality): void
     {
-        $this->quality = $quality;
+        if ($quality >= 0 && $quality <= 100) {
+            $this->quality = $quality;
+        } else {
+            $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\PNGThumbnail::setQuality - Invalid quality value", [$quality]);
+            throw new \InvalidArgumentException("Invalid quality value: " . $quality);
+        }
     }
 
     private function getThumbnailLocalPath(int $width, int $height, int $quality, string $hash): string
