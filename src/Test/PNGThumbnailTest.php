@@ -46,7 +46,7 @@ final class PNGThumbnailTest extends \aportela\RemoteThumbnailCacheWrapper\Test\
         $this->assertFileExists($path);
     }
 
-    public function testRemoteInvalidURL(): void
+    public function testRemoteInvalidUrl(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessageMatches("/^Invalid url: " . self::REMOTE_URL_INVALID . "$/");
