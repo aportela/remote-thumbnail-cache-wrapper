@@ -26,7 +26,7 @@
   "require": {
     "php": ">=8.4",
     "aportela/httprequest-wrapper": "^2.2",
-    "aportela/simple-fs-cache": "^1.0",
+    "aportela/simple-fs-cache": "^1.1",
     "psr/log": "^3.0",
     "sybio/image-workshop": "^2.2"
   },
