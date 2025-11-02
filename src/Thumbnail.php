@@ -27,7 +27,18 @@ abstract class Thumbnail
     public function __construct(\Psr\Log\LoggerInterface $logger, string $localBasePath, \aportela\RemoteThumbnailCacheWrapper\Source\ISource $source, \aportela\RemoteThumbnailCacheWrapper\ThumbnailType $type, int $quality, int $width, int $height)
     {
         $this->logger = $logger;
-        $this->cache = new \aportela\SimpleFSCache\Cache($logger, \aportela\SimpleFSCache\CacheFormat::NONE, $localBasePath, false);
+        switch ($type) {
+            case \aportela\RemoteThumbnailCacheWrapper\ThumbnailType::JPG:
+                $this->cache = new \aportela\SimpleFSCache\Cache($logger, \aportela\SimpleFSCache\CacheFormat::JPG, $localBasePath, false);
+                break;
+            case \aportela\RemoteThumbnailCacheWrapper\ThumbnailType::PNG:
+                $this->cache = new \aportela\SimpleFSCache\Cache($logger, \aportela\SimpleFSCache\CacheFormat::PNG, $localBasePath, false);
+                break;
+            default:
+                $this->cache = new \aportela\SimpleFSCache\Cache($logger, \aportela\SimpleFSCache\CacheFormat::NONE, $localBasePath, false);
+                break;
+        }
+
         if ($this->cache->isEnabled()) {
             // save original cache base path
             $this->localBasePath = $this->cache->getBasePath();
@@ -36,16 +47,30 @@ abstract class Thumbnail
             $this->type = $type;
             $this->setQuality($quality, false);
             $this->setDimensions($width, $height, false);
-            // set new cache base path (append widthxheight-quality)
+            // set new cache base path (append /widthxheight-quality/)
             $this->refreshCacheBasePath();
         } else {
             $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::__construct - Error setting cache", [$localBasePath]);
-            throw new \RuntimeException("Error setting cache, path:" . $localBasePath);
+            throw new \aportela\RemoteThumbnailCacheWrapper\Exception\FileSystemException("Error setting cache: " . $localBasePath);
         }
     }
 
     public function __destruct()
     {
+    }
+
+    private function getThumbnailBasePath(): string
+    {
+        return (
+            sprintf(
+                "%s%s%dx%d-%03d",
+                $this->localBasePath,
+                DIRECTORY_SEPARATOR,
+                $this->width,
+                $this->height,
+                $this->quality
+            )
+        );
     }
 
     protected function refreshCacheBasePath()
@@ -62,8 +87,8 @@ abstract class Thumbnail
                 $this->refreshCacheBasePath();
             }
         } else {
-            $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::setDimensions - Invalid dimension values", [$width, $height]);
-            throw new \InvalidArgumentException("Invalid dimension values: " . print_r([$width, $height], true));
+            $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::setDimensions - Invalid dimensions", [$width, $height]);
+            throw new \aportela\RemoteThumbnailCacheWrapper\Exception\InvalidDimensionsException("Invalid dimensions: " . print_r([$width, $height], true));
         }
     }
 
@@ -75,76 +100,50 @@ abstract class Thumbnail
                 $this->refreshCacheBasePath();
             }
         } else {
-            $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::setQuality - Invalid quality value", [$quality]);
-            throw new \InvalidArgumentException("Invalid quality value: " . $quality);
+            $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::setQuality - Invalid quality", [$quality]);
+            throw new \aportela\RemoteThumbnailCacheWrapper\Exception\InvalidQualityException("Invalid quality: " . $quality);
         }
     }
 
-    protected function getThumbnailBasePath(): string
+    private function getThumbnailDirectory(): string
     {
-        return (
-            sprintf(
-                "%s%s%dx%d-%03d",
-                $this->localBasePath,
-                DIRECTORY_SEPARATOR,
-                $this->width,
-                $this->height,
-                $this->quality
-            )
-        );
+        return ($this->cache->getCacheDirectoryPath($this->hash));
     }
 
-    protected function getThumbnailDirectory(): string
+    private function getThumbnailFullPath(): string
     {
-        return (
-            sprintf(
-                "",
-                $this->getThumbnailBasePath(),
-                DIRECTORY_SEPARATOR,
-                implode(
-                    DIRECTORY_SEPARATOR,
-                    [
-                        substr($this->hash, 0, 1),
-                        substr($this->hash, 1, 1),
-                        substr($this->hash, 2, 1),
-                        substr($this->hash, 3, 1)
-                    ]
-                )
-            )
-        );
+        return ($this->cache->getCacheFilePath($this->hash));
     }
 
-    protected function getThumbnailFullPath(): string
+    public function isCached(): bool
     {
-        return ($this->getThumbnailDirectory($this->hash) . DIRECTORY_SEPARATOR .  "{$this->hash}.{$this->type->value}");
+        return ($this->cache->isCached($this->hash));
     }
 
-    protected function isCached(): bool
-    {
-        return (file_exists($this->getThumbnailFullPath()));
-    }
-
-    protected function create(string $sourcePath): bool
+    private function create(string $sourcePath): bool
     {
         if (file_exists(($sourcePath))) {
             $thumb = ImageWorkshop::initFromPath($sourcePath);
             if ($thumb->getWidth() > $this->width) {
                 $thumb->resizeInPixel($this->width, null, true);
             }
-            $this->logger->debug("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::createThumbnail (width: {$this->width} / height: {$this->height} / quality: {$this->quality})");
             $destPath = $this->getThumbnailFullPath();
             if (file_exists($destPath)) {
-                unlink($destPath);
+                $this->logger->info("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::create - Removing existent file", [$destPath]);
+                if (! unlink($destPath)) {
+                    $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::create - Error removing file", [$destPath]);
+                    throw new \aportela\RemoteThumbnailCacheWrapper\Exception\FileSystemException("Error removing file " . $destPath);
+                }
             }
             $thumb->save(dirname($destPath), basename($destPath), true, null, $this->quality);
             return (true);
         } else {
-            $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::createThumbnail - Error: source path ({$sourcePath})not found");
+            $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::create - Error: source path ({$sourcePath}) not found");
             return (false);
         }
     }
 
-    protected function saveRemoteURLIntoTemporalFile(string $url): bool|string
+    private function saveRemoteURLIntoTemporalFile(string $url): bool|string
     {
         $http = new \aportela\HTTPRequestWrapper\HTTPRequest($this->logger);
         $response = $http->GET($url);
@@ -158,46 +157,74 @@ abstract class Thumbnail
                 return (false);
             }
         } else {
-            $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::saveRemoteURLIntoTemporalFile - Invalid response code", [$url, $response->code]);
+            $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::saveRemoteURLIntoTemporalFile - Invalid http response code", [$url, $response->code]);
             return (false);
         }
     }
 
-    public function getFromRemoteURL(string $url, bool $force = false): bool|string
+    private function getFromRemoteURL(string $url, bool $force = false): bool|string
     {
-        $localFilePath = $this->getThumbnailFullPath();
-        if ($force && file_exists($localFilePath)) {
-            unlink($localFilePath);
+        $thumbnailPath = $this->getThumbnailFullPath();
+        if ($force && $this->isCached()) {
+            $this->cache->remove($this->hash);
         }
         if (! $this->isCached()) {
             $temporalPath = $this->saveRemoteURLIntoTemporalFile($url);
             if ($temporalPath !== false) {
-                $this->create($temporalPath);
-                unlink($temporalPath);
-                return ($localFilePath);
+                if ($this->create($temporalPath)) {
+                    if (! unlink($temporalPath)) {
+                        $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::getFromRemoteURL - Error removing temporal file", [$temporalPath]);
+                    }
+                    return ($thumbnailPath);
+                } else {
+                    $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::getFromRemoteURL - Error creating thumbnail from temporal file", [$temporalPath]);
+                    if (! unlink($temporalPath)) {
+                        $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::getFromRemoteURL - Error removing temporal file", [$temporalPath]);
+                    }
+                    return (false);
+                }
             } else {
+                $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::getFromRemoteURL - Error saving remote url into temporal file", [$url]);
                 return (false);
             }
         } else {
-            return ($localFilePath);
+            return ($thumbnailPath);
         }
     }
 
-    public function getFromLocalFilesystem(string $path, bool $force = false): bool|string
+    private function getFromLocalFilesystem(string $path, bool $force = false): bool|string
     {
-        $localFilePath = $this->getThumbnailFullPath();
-        if ($force && file_exists($localFilePath)) {
-            unlink($localFilePath);
+        $thumbnailPath = $this->getThumbnailFullPath();
+        if ($force && $this->isCached()) {
+            $this->cache->remove($this->hash);
         }
         if (! $this->isCached()) {
             if (file_exists($path)) {
-                $this->create($path);
-                return ($localFilePath);
+                if ($this->create($path)) {
+                    return ($thumbnailPath);
+                } else {
+                    $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::getFromRemoteURL - Error creating thumbnail from local path", [$path]);
+                    return (false);
+                }
             } else {
+                $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::getFromLocalFilesystem - Error: local path not found", [$path]);
                 return (false);
             }
         } else {
-            return ($localFilePath);
+            return ($thumbnailPath);
+        }
+    }
+
+    public function get(bool $force = false): bool|string
+    {
+        switch (get_class($this->source)) {
+            case "aportela\RemoteThumbnailCacheWrapper\Source\LocalFilenameResource":
+                return ($this->getFromLocalFilesystem($this->source->getResource(), $force));
+            case "aportela\RemoteThumbnailCacheWrapper\Source\URLSource":
+                return ($this->getFromRemoteURL($this->source->getResource(), $force));
+                break;
+            default:
+                return (false);
         }
     }
 }
