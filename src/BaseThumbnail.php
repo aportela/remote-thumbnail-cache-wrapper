@@ -11,23 +11,13 @@ abstract class BaseThumbnail implements \aportela\RemoteThumbnailCacheWrapper\IT
     protected \aportela\SimpleFSCache\Cache $cache;
     public ?string $path = null;
 
-    public function __construct(\Psr\Log\LoggerInterface $logger, string $localBasePath)
+    public function __construct(\Psr\Log\LoggerInterface $logger, string $localBasePath, ?int $width = null, ?int $height = null)
     {
         $this->logger = $logger;
-        $tmpPath = realpath($localBasePath);
-        if ($tmpPath !== false) {
-            if (!file_exists($tmpPath)) {
-                $this->logger->info("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::__construct - Creating missing path: {$localBasePath}");
-                if (! mkdir($tmpPath, 0750)) {
-                    $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::__construct - Error creating missing path: {$localBasePath}");
-                    throw new \aportela\RemoteThumbnailCacheWrapper\Exception\FileSystemException("");
-                }
-                $this->localBasePath = $tmpPath;
-            }
-            $this->cache = new \aportela\SimpleFSCache\Cache($this->logger, \aportela\SimpleFSCache\CacheFormat::NONE, $this->localBasePath, false);
-        } else {
-            $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::__construct - Invalid localBasePath param value", [$localBasePath]);
-            throw new \aportela\RemoteThumbnailCacheWrapper\Exception\FileSystemException("");
+        $this->cache = new \aportela\SimpleFSCache\Cache($logger, \aportela\SimpleFSCache\CacheFormat::NONE, $localBasePath, false);
+        $this->localBasePath = $localBasePath;
+        if ($width != null && $height != null) {
+            $this->setDimensions($width, $height);
         }
     }
 
@@ -35,7 +25,12 @@ abstract class BaseThumbnail implements \aportela\RemoteThumbnailCacheWrapper\IT
 
     public function setDimensions(int $width, int $height): void
     {
-        $this->width = $width;
-        $this->height = $height;
+        if ($width > 0 && $height > 0) {
+            $this->width = $width;
+            $this->height = $height;
+        } else {
+            $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\BaseThumbnail::setDimensions - Invalid {$width}/{$height} values", [$width, $height]);
+            throw new \InvalidArgumentException("Invalid {$width}/{$height} values: " . print_r([$width, $height], true));
+        }
     }
 }
