@@ -18,7 +18,9 @@ final class URLSource implements \aportela\RemoteThumbnailCacheWrapper\Source\IS
         }
     }
 
-    public function __destruct() {}
+    public function __destruct()
+    {
+    }
 
     public function getResource(): string
     {
