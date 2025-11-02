@@ -10,11 +10,11 @@ final class URLSource implements \aportela\RemoteThumbnailCacheWrapper\Source\IS
     public function __construct(string $url)
     {
         $parsedUrl = parse_url($url);
-        if ($parsedUrl !== false && $parsedUrl !== null) {
+        if ($parsedUrl !== false && $parsedUrl !== null && ! empty($parsedUrl["scheme"]) && ! empty($parsedUrl["host"])) {
             $this->url = $url;
             $this->hash = sha1($url);
         } else {
-            throw new \Exception("Invalid url: {$url}");
+            throw new \InvalidArgumentException("Invalid url: {$url}");
         }
     }
 
