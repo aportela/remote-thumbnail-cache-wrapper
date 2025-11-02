@@ -4,37 +4,19 @@ namespace aportela\RemoteThumbnailCacheWrapper;
 
 use PHPImageWorkshop\ImageWorkshop;
 
-final class JPEGThumbnail extends \aportela\RemoteThumbnailCacheWrapper\BaseThumbnail
+final class JPEGThumbnail extends \aportela\RemoteThumbnailCacheWrapper\BaseQualityThumbnail
 {
     private const OUTPUT_FORMAT_EXTENSION = "jpg";
     public const DEFAULT_IMAGE_QUALITY = 95;
 
-    private int $quality;
-
-    public function __construct(\Psr\Log\LoggerInterface $logger, string $localBasePath)
+    public function __construct(\Psr\Log\LoggerInterface $logger, string $localBasePath, int $quality = self::DEFAULT_IMAGE_QUALITY, ?int $width = null, ?int $height = null)
     {
-        $this->logger = $logger;
-        $this->localBasePath = realpath($localBasePath);
-        if (!file_exists($this->localBasePath)) {
-            mkdir($this->localBasePath, 0750);
-        }
-        $this->quality = self::DEFAULT_IMAGE_QUALITY;
-        $this->logger->debug("RemoteThumbnailCacheWrapper::__construct");
+        parent::__construct($logger, $localBasePath, $quality, $width, $height);
     }
 
     public function __destruct()
     {
-        $this->logger->debug("RemoteThumbnailCacheWrapper::__destruct");
-    }
-
-    public function setQuality(int $quality): void
-    {
-        if ($quality >= 0 && $quality <= 100) {
-            $this->quality = $quality;
-        } else {
-            $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail::setQuality - Invalid quality value", [$quality]);
-            throw new \InvalidArgumentException("Invalid quality value: " . $quality);
-        }
+        parent::__destruct();
     }
 
     private function getThumbnailLocalPath(int $width, int $height, int $quality, string $hash): string
