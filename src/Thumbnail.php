@@ -55,7 +55,9 @@ abstract class Thumbnail
         }
     }
 
-    public function __destruct() {}
+    public function __destruct()
+    {
+    }
 
     private function getThumbnailBasePath(): string
     {
