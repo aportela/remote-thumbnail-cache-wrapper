@@ -13,7 +13,7 @@ final class LocalFilenameResource implements \aportela\RemoteThumbnailCacheWrapp
             $this->localFilename = $localFilename;
             $this->hash = sha1($localFilename);
         } else {
-            throw new \Exception("Local filename ({$localFilename}) not found");
+            throw new \InvalidArgumentException("Local filename ({$localFilename}) not found");
         }
     }
 
