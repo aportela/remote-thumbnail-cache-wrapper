@@ -4,7 +4,7 @@ namespace aportela\RemoteThumbnailCacheWrapper;
 
 use PHPImageWorkshop\ImageWorkshop;
 
-final class JPEGThumbnail extends \aportela\RemoteThumbnailCacheWrapper\BaseQualityThumbnail
+final class JPEGThumbnail extends \aportela\RemoteThumbnailCacheWrapper\Thumbnail
 {
     private const OUTPUT_FORMAT_EXTENSION = "jpg";
     public const DEFAULT_IMAGE_QUALITY = 95;

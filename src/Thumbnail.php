@@ -2,7 +2,7 @@
 
 namespace aportela\RemoteThumbnailCacheWrapper;
 
-abstract class BaseThumbnail implements \aportela\RemoteThumbnailCacheWrapper\IThumbnail
+abstract class Thumbnail implements \aportela\RemoteThumbnailCacheWrapper\IThumbnail
 {
     protected \Psr\Log\LoggerInterface $logger;
     protected string $localBasePath;
