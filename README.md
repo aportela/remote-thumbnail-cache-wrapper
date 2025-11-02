@@ -27,16 +27,18 @@ composer require aportela/remote-thumbnail-cache-wrapper
 
     $logger = new \Psr\Log\NullLogger("");
 
-    // cached thumbnails will be stored on this path
-    $localPath = "./data/";
+    $cachePath = dirname(__FILE__) . DIRECTORY_SEPARATOR . "cache";
 
-    $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail($logger, $localPath);
-    $thumbnail->setDimensions(250, 250);
-    $thumbnail->setQuality(\aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail::DEFAULT_IMAGE_QUALITY);
+    $url = "https://raw.githubusercontent.com/aportela/remote-thumbnail-cache-wrapper/refs/heads/main/src/Test/200.jpg";
+    $source = new \aportela\RemoteThumbnailCacheWrapper\Source\URLSource($url);
 
-    if ($thumbnail->getFromRemoteURL("https://i.imgur.com/1bo3VaU.jpeg")) {
+    // JPEG, quality: 80, resolution: 320x200
+    $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail(self::$logger, $cachePath, $source, 80, 320, 200);
+    // get thumbnail local path (from cache || create cache if not found)
+    $path = $thumbnail->get();
+    if ($path !== false) {
         header("Content-Type: image/jpeg");
-        readfile($thumbnail->path);
+        readfile($path);
     } else {
         header("HTTP/1.1 404 Not Found");
     }
@@ -51,16 +53,18 @@ composer require aportela/remote-thumbnail-cache-wrapper
 
     $logger = new \Psr\Log\NullLogger("");
 
-    // cached thumbnails will be stored on this path
-    $localPath = "./data/";
+    $cachePath = dirname(__FILE__) . DIRECTORY_SEPARATOR . "cache";
 
-    $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail($logger, $localPath);
-    $thumbnail->setDimensions(250, 250);
-    $thumbnail->setQuality(\aportela\RemoteThumbnailCacheWrapper\PNGThumbnail::DEFAULT_IMAGE_QUALITY);
+    $localImagePath = "/tmp/existent_image.jpg";
+    $source = new \aportela\RemoteThumbnailCacheWrapper\Source\LocalFilenameResource($localImagePath);
 
-    if ($thumbnail->getFromLocalFilesystem("/tmp/test.jpg")) {
+    // PNG, quality: 90, resolution: 160x100
+    $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, $cachePath, $source, 80, 160, 100);
+    // get thumbnail local path (from cache || create cache if not found)
+    $path = $thumbnail->get();
+    if ($path !== false) {
         header("Content-Type: image/png");
-        readfile($thumbnail->path);
+        readfile($path);
     } else {
         header("HTTP/1.1 404 Not Found");
     }
