@@ -26,11 +26,7 @@ final class JPEGThumbnail extends \aportela\RemoteThumbnailCacheWrapper\Thumbnai
 
     public function remoteURLExistsInCache(string $url): bool
     {
-        if ($this->width > 0 && $this->height > 0 && $this->quality > 0) {
-            return (file_exists($this->getThumbnailLocalPath($this->width, $this->height, $this->quality, sha1($url))));
-        } else {
-            return (false);
-        }
+        return ($this->remoteURLExistsInCache_($url, self::OUTPUT_FORMAT_EXTENSION));
     }
 
     public function localFilesystemExistsInCache(string $path): bool

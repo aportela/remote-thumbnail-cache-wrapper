@@ -101,4 +101,9 @@ abstract class Thumbnail implements \aportela\RemoteThumbnailCacheWrapper\IThumb
     {
         return ($this->getThumbnailDirectory($hash) . DIRECTORY_SEPARATOR . "$hash.{$extension}");
     }
+
+    public function remoteURLExistsInCache_(string $url, string $extension): bool
+    {
+        return (file_exists($this->getThumbnailFullPath(sha1($url), $extension)));
+    }
 }
