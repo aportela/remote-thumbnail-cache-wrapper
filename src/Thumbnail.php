@@ -55,9 +55,7 @@ abstract class Thumbnail
         }
     }
 
-    public function __destruct()
-    {
-    }
+    public function __destruct() {}
 
     private function getThumbnailBasePath(): string
     {
@@ -73,7 +71,7 @@ abstract class Thumbnail
         );
     }
 
-    protected function refreshCacheBasePath()
+    protected function refreshCacheBasePath(): void
     {
         $this->cache->setBasePath($this->getThumbnailBasePath());
     }
@@ -103,11 +101,6 @@ abstract class Thumbnail
             $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::setQuality - Invalid quality", [$quality]);
             throw new \aportela\RemoteThumbnailCacheWrapper\Exception\InvalidQualityException("Invalid quality: " . $quality);
         }
-    }
-
-    private function getThumbnailDirectory(): string
-    {
-        return ($this->cache->getCacheDirectoryPath($this->hash));
     }
 
     private function getThumbnailFullPath(): string
@@ -222,7 +215,6 @@ abstract class Thumbnail
                 return ($this->getFromLocalFilesystem($this->source->getResource(), $force));
             case "aportela\RemoteThumbnailCacheWrapper\Source\URLSource":
                 return ($this->getFromRemoteURL($this->source->getResource(), $force));
-                break;
             default:
                 return (false);
         }
