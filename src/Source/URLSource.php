@@ -1,8 +1,8 @@
 <?php
 
-namespace aportela\RemoteThumbnailCacheWrapper;
+namespace aportela\RemoteThumbnailCacheWrapper\Source;
 
-final class URLSource implements \aportela\RemoteThumbnailCacheWrapper\ISource
+final class URLSource implements \aportela\RemoteThumbnailCacheWrapper\Source\ISource
 {
     private string $url;
     private string $hash;
@@ -18,7 +18,9 @@ final class URLSource implements \aportela\RemoteThumbnailCacheWrapper\ISource
         }
     }
 
-    public function __destruct() {}
+    public function __destruct()
+    {
+    }
 
     public function getResource(): string
     {

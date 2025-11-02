@@ -17,14 +17,14 @@ abstract class Thumbnail
 
     protected string $hash;
 
-    protected \aportela\RemoteThumbnailCacheWrapper\ISource $source;
+    protected \aportela\RemoteThumbnailCacheWrapper\Source\ISource $source;
 
     protected \aportela\RemoteThumbnailCacheWrapper\ThumbnailType $type;
 
     public const DEFAULT_THUMBNAIL_WIDTH = 320;
     public const DEFAULT_THUMBNAIL_HEIGHT = 200;
 
-    public function __construct(\Psr\Log\LoggerInterface $logger, string $localBasePath, \aportela\RemoteThumbnailCacheWrapper\ISource $source, \aportela\RemoteThumbnailCacheWrapper\ThumbnailType $type, int $quality, int $width, int $height)
+    public function __construct(\Psr\Log\LoggerInterface $logger, string $localBasePath, \aportela\RemoteThumbnailCacheWrapper\Source\ISource $source, \aportela\RemoteThumbnailCacheWrapper\ThumbnailType $type, int $quality, int $width, int $height)
     {
         $this->logger = $logger;
         $this->cache = new \aportela\SimpleFSCache\Cache($logger, \aportela\SimpleFSCache\CacheFormat::NONE, $localBasePath, false);
@@ -44,7 +44,9 @@ abstract class Thumbnail
         }
     }
 
-    public function __destruct() {}
+    public function __destruct()
+    {
+    }
 
     protected function refreshCacheBasePath()
     {

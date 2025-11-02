@@ -1,6 +1,6 @@
 <?php
 
-namespace aportela\RemoteThumbnailCacheWrapper;
+namespace aportela\RemoteThumbnailCacheWrapper\Source;
 
 interface ISource
 {

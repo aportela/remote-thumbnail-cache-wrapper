@@ -10,7 +10,7 @@ final class JPEGThumbnailTest extends \aportela\RemoteThumbnailCacheWrapper\Test
 {
     public function testRemoteNotExistsImage(): void
     {
-        $source = new \aportela\RemoteThumbnailCacheWrapper\URLSource(self::REMOTE_URL_404);
+        $source = new \aportela\RemoteThumbnailCacheWrapper\Source\URLSource(self::REMOTE_URL_404);
         $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail(self::$logger, self::$cachePath, $source);
         $path = $thumbnail->getFromRemoteURL(self::REMOTE_URL_404, false);
         $this->assertFalse($path);
@@ -18,7 +18,7 @@ final class JPEGThumbnailTest extends \aportela\RemoteThumbnailCacheWrapper\Test
 
     public function testRemoteExistsNotImage(): void
     {
-        $source = new \aportela\RemoteThumbnailCacheWrapper\URLSource(self::REMOTE_URL_200_NOT_IMAGE);
+        $source = new \aportela\RemoteThumbnailCacheWrapper\Source\URLSource(self::REMOTE_URL_200_NOT_IMAGE);
         $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail(self::$logger, self::$cachePath, $source);
         $path = $thumbnail->getFromRemoteURL(self::REMOTE_URL_200_NOT_IMAGE, false);
         $this->assertFalse($path);
@@ -26,7 +26,7 @@ final class JPEGThumbnailTest extends \aportela\RemoteThumbnailCacheWrapper\Test
 
     public function testRemoteExistsImage(): void
     {
-        $source = new \aportela\RemoteThumbnailCacheWrapper\URLSource(self::REMOTE_URL_200_NOT_IMAGE);
+        $source = new \aportela\RemoteThumbnailCacheWrapper\Source\URLSource(self::REMOTE_URL_200_NOT_IMAGE);
         $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail(self::$logger, self::$cachePath, $source);
         $path = $thumbnail->getFromRemoteURL(self::REMOTE_URL_200_NOT_IMAGE, false);
         if ($path !== false) {
@@ -38,7 +38,7 @@ final class JPEGThumbnailTest extends \aportela\RemoteThumbnailCacheWrapper\Test
 
     public function testRemoteExistsImageForce(): void
     {
-        $source = new \aportela\RemoteThumbnailCacheWrapper\URLSource(self::REMOTE_URL_200_NOT_IMAGE);
+        $source = new \aportela\RemoteThumbnailCacheWrapper\Source\URLSource(self::REMOTE_URL_200_NOT_IMAGE);
         $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail(self::$logger, self::$cachePath, $source);
         $path = $thumbnail->getFromRemoteURL(self::REMOTE_URL_200_NOT_IMAGE, true);
         if ($path !== false) {
@@ -52,12 +52,12 @@ final class JPEGThumbnailTest extends \aportela\RemoteThumbnailCacheWrapper\Test
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessageMatches("/^Local filename \(.*\) not found$/");
-        $source = new \aportela\RemoteThumbnailCacheWrapper\LocalFilenameResource(self::LOCAL_FILE_NOT_EXISTS);
+        $source = new \aportela\RemoteThumbnailCacheWrapper\Source\LocalFilenameResource(self::LOCAL_FILE_NOT_EXISTS);
     }
 
     public function testLocalExistsImage(): void
     {
-        $source = new \aportela\RemoteThumbnailCacheWrapper\LocalFilenameResource(self::LOCAL_FILE_EXISTS);
+        $source = new \aportela\RemoteThumbnailCacheWrapper\Source\LocalFilenameResource(self::LOCAL_FILE_EXISTS);
         $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail(self::$logger, self::$cachePath, $source);
         $path = $thumbnail->getFromLocalFilesystem(self::LOCAL_FILE_EXISTS, false);
         if ($path !== false) {
@@ -69,7 +69,7 @@ final class JPEGThumbnailTest extends \aportela\RemoteThumbnailCacheWrapper\Test
 
     public function testLocalExistsImageForce(): void
     {
-        $source = new \aportela\RemoteThumbnailCacheWrapper\LocalFilenameResource(self::LOCAL_FILE_EXISTS);
+        $source = new \aportela\RemoteThumbnailCacheWrapper\Source\LocalFilenameResource(self::LOCAL_FILE_EXISTS);
         $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail(self::$logger, self::$cachePath, $source);
         $path = $thumbnail->getFromLocalFilesystem(self::LOCAL_FILE_EXISTS, true);
         if ($path !== false) {
