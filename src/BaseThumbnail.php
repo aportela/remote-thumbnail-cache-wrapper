@@ -29,8 +29,8 @@ abstract class BaseThumbnail implements \aportela\RemoteThumbnailCacheWrapper\IT
             $this->width = $width;
             $this->height = $height;
         } else {
-            $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\BaseThumbnail::setDimensions - Invalid {$width}/{$height} values", [$width, $height]);
-            throw new \InvalidArgumentException("Invalid {$width}/{$height} values: " . print_r([$width, $height], true));
+            $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\BaseThumbnail::setDimensions - Invalid dimension values", [$width, $height]);
+            throw new \InvalidArgumentException("Invalid dimension values: " . print_r([$width, $height], true));
         }
     }
 }
