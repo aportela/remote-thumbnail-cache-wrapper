@@ -33,7 +33,7 @@ composer require aportela/remote-thumbnail-cache-wrapper
     $source = new \aportela\RemoteThumbnailCacheWrapper\Source\URLSource($url);
 
     // JPEG, quality: 80, resolution: 320x200
-    $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail(self::$logger, $cachePath, $source, 80, 320, 200);
+    $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail($logger, $cachePath, $source, 80, 320, 200);
     // get thumbnail local path (from cache || create cache if not found)
     $path = $thumbnail->get();
     if ($path !== false) {
@@ -59,7 +59,7 @@ composer require aportela/remote-thumbnail-cache-wrapper
     $source = new \aportela\RemoteThumbnailCacheWrapper\Source\LocalFilenameResource($localImagePath);
 
     // PNG, quality: 90, resolution: 160x100
-    $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, $cachePath, $source, 80, 160, 100);
+    $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail($logger, $cachePath, $source, 80, 160, 100);
     // get thumbnail local path (from cache || create cache if not found)
     $path = $thumbnail->get();
     if ($path !== false) {
