@@ -9,8 +9,7 @@ final class URLSource implements \aportela\RemoteThumbnailCacheWrapper\Source\IS
 
     public function __construct(string $url)
     {
-        $parsedUrl = parse_url($url);
-        if ($parsedUrl !== false && ! empty($parsedUrl["scheme"]) && ! empty($parsedUrl["host"])) {
+        if (filter_var($url, FILTER_VALIDATE_URL)) {
             $this->url = $url;
             $this->hash = sha1($url);
         } else {
