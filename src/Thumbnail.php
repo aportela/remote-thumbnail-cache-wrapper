@@ -55,9 +55,7 @@ abstract class Thumbnail
         }
     }
 
-    public function __destruct()
-    {
-    }
+    public function __destruct() {}
 
     private function getThumbnailBasePath(): string
     {
@@ -145,8 +143,17 @@ abstract class Thumbnail
         if ($response->code == 200) {
             if (in_array($response->getContentType(), ["image/jpeg", "image/png"])) {
                 $tmpFile = tempnam(sys_get_temp_dir(), uniqid());
-                file_put_contents($tmpFile, $response->body);
-                return ($tmpFile);
+                if (is_string($tmpFile)) {
+                    if (file_put_contents($tmpFile, $response->body) !== false) {;
+                        return ($tmpFile);
+                    } else {
+                        $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::saveRemoteURLIntoTemporalFile - Error saving contents into temporal file");
+                        return (false);
+                    }
+                } else {
+                    $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::saveRemoteURLIntoTemporalFile - Error creating temporal file");
+                    return (false);
+                }
             } else {
                 $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::saveRemoteURLIntoTemporalFile - Invalid/unsupported mime type", [$response->getContentType()]);
                 return (false);
