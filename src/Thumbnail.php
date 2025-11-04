@@ -41,7 +41,7 @@ abstract class Thumbnail
 
         if ($this->cache->isEnabled()) {
             // save original cache base path
-            $this->localBasePath = $this->cache->getBasePath();
+            $this->localBasePath = (string) $this->cache->getBasePath();
             $this->source = $source;
             $this->hash = $source->getHash();
             $this->type = $type;
