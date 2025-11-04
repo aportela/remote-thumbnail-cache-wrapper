@@ -172,7 +172,7 @@ abstract class Thumbnail
         }
         if (! $this->isCached()) {
             $temporalPath = $this->saveRemoteURLIntoTemporalFile($url);
-            if ($temporalPath !== false) {
+            if (is_string($temporalPath)) {
                 if ($this->create($temporalPath)) {
                     if (! unlink($temporalPath)) {
                         $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::getFromRemoteURL - Error removing temporal file", [$temporalPath]);
