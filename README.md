@@ -32,8 +32,12 @@ composer require aportela/remote-thumbnail-cache-wrapper
     $url = "https://raw.githubusercontent.com/aportela/remote-thumbnail-cache-wrapper/refs/heads/main/src/Test/200.jpg";
     $source = new \aportela\RemoteThumbnailCacheWrapper\Source\URLSource($url);
 
-    // JPEG, quality: 80, resolution: 320x200
-    $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail($logger, $cachePath, $source, 80, 320, 200);
+    //$ttl = null; // cache never expires
+    //$ttl = 60; // cache expires after 60 seconds
+    $ttl = new \DateInterval("PT60M"); // cache expires after 60 minutes
+
+    // JPEG, quality: 80, resolution: 320x200, cache expires after 60 minutes
+    $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\JPEGThumbnail($logger, $cachePath, $source, 80, 320, 200, $ttl);
     // get thumbnail local path (from cache || create cache if not found)
     $path = $thumbnail->get();
     if ($path !== false) {
@@ -61,6 +65,7 @@ composer require aportela/remote-thumbnail-cache-wrapper
     $ttl = null; // cache never expires
     //$ttl = 60; // cache expires after 60 seconds
     //$ttl = new \DateInterval("PT60M"); // cache expires after 60 minutes
+
     // PNG, quality: 90, resolution: 160x100, cache never expires
     $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail($logger, $cachePath, $source, 80, 160, 100, $ttl);
     // get thumbnail local path (from cache || create cache if not found)
