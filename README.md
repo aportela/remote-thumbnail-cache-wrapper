@@ -58,8 +58,11 @@ composer require aportela/remote-thumbnail-cache-wrapper
     $localImagePath = "/tmp/existent_image.jpg";
     $source = new \aportela\RemoteThumbnailCacheWrapper\Source\LocalFilenameResource($localImagePath);
 
-    // PNG, quality: 90, resolution: 160x100
-    $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail($logger, $cachePath, $source, 80, 160, 100);
+    $ttl = null; // cache never expires
+    //$ttl = 60; // cache expires after 60 seconds
+    //$ttl = new \DateInterval("PT60M"); // cache expires after 60 minutes
+    // PNG, quality: 90, resolution: 160x100, cache never expires
+    $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail($logger, $cachePath, $source, 80, 160, 100, $ttl);
     // get thumbnail local path (from cache || create cache if not found)
     $path = $thumbnail->get();
     if ($path !== false) {

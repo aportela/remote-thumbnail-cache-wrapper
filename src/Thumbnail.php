@@ -24,38 +24,35 @@ abstract class Thumbnail
     public const DEFAULT_THUMBNAIL_WIDTH = 320;
     public const DEFAULT_THUMBNAIL_HEIGHT = 200;
 
-    public function __construct(\Psr\Log\LoggerInterface $logger, string $localBasePath, \aportela\RemoteThumbnailCacheWrapper\Source\ISource $source, \aportela\RemoteThumbnailCacheWrapper\ThumbnailType $type, int $quality, int $width, int $height)
+    public function __construct(\Psr\Log\LoggerInterface $logger, string $localBasePath, \aportela\RemoteThumbnailCacheWrapper\Source\ISource $source, \aportela\RemoteThumbnailCacheWrapper\ThumbnailType $type, int $quality, int $width, int $height, null|int|\DateInterval $ttl = null)
     {
         $this->logger = $logger;
         switch ($type) {
             case \aportela\RemoteThumbnailCacheWrapper\ThumbnailType::JPG:
-                $this->cache = new \aportela\SimpleFSCache\Cache($logger, \aportela\SimpleFSCache\CacheFormat::JPG, $localBasePath, false);
+                $this->cache = new \aportela\SimpleFSCache\Cache($logger, $localBasePath, $ttl, \aportela\SimpleFSCache\CacheFormat::JPG);
                 break;
             case \aportela\RemoteThumbnailCacheWrapper\ThumbnailType::PNG:
-                $this->cache = new \aportela\SimpleFSCache\Cache($logger, \aportela\SimpleFSCache\CacheFormat::PNG, $localBasePath, false);
+                $this->cache = new \aportela\SimpleFSCache\Cache($logger, $localBasePath, $ttl, \aportela\SimpleFSCache\CacheFormat::PNG);
                 break;
             default:
-                $this->cache = new \aportela\SimpleFSCache\Cache($logger, \aportela\SimpleFSCache\CacheFormat::NONE, $localBasePath, false);
+                $this->cache = new \aportela\SimpleFSCache\Cache($logger, $localBasePath, $ttl, \aportela\SimpleFSCache\CacheFormat::NONE);
                 break;
         }
 
-        if ($this->cache->isEnabled()) {
-            // save original cache base path
-            $this->localBasePath = (string) $this->cache->getBasePath();
-            $this->source = $source;
-            $this->hash = $source->getHash();
-            $this->type = $type;
-            $this->setQuality($quality, false);
-            $this->setDimensions($width, $height, false);
-            // set new cache base path (append /widthxheight-quality/)
-            $this->refreshCacheBasePath();
-        } else {
-            $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::__construct - Error setting cache", [$localBasePath]);
-            throw new \aportela\RemoteThumbnailCacheWrapper\Exception\FileSystemException("Error setting cache: " . $localBasePath);
-        }
+        // save original cache base path
+        $this->localBasePath = (string) $this->cache->getBasePath();
+        $this->source = $source;
+        $this->hash = $source->getHash();
+        $this->type = $type;
+        $this->setQuality($quality, false);
+        $this->setDimensions($width, $height, false);
+        // set new cache base path (append /widthxheight-quality/)
+        $this->refreshCacheBasePath();
     }
 
-    public function __destruct() {}
+    public function __destruct()
+    {
+    }
 
     private function getThumbnailBasePath(): string
     {
@@ -105,12 +102,17 @@ abstract class Thumbnail
 
     private function getThumbnailFullPath(): string
     {
-        return ($this->cache->getCacheFilePath($this->hash));
+        return ($this->cache->getCacheKeyFilePath($this->hash));
     }
 
     public function isCached(): bool
     {
-        return ($this->cache->isCached($this->hash));
+        return ($this->cache->has($this->hash));
+    }
+
+    public function deleteCache(): bool
+    {
+        return ($this->cache->delete($this->hash));
     }
 
     private function create(string $sourcePath): bool
@@ -144,7 +146,8 @@ abstract class Thumbnail
             if (in_array($response->getContentType(), ["image/jpeg", "image/png"])) {
                 $tmpFile = tempnam(sys_get_temp_dir(), uniqid());
                 if (is_string($tmpFile)) {
-                    if (file_put_contents($tmpFile, $response->body) !== false) {;
+                    if (file_put_contents($tmpFile, $response->body) !== false) {
+                        ;
                         return ($tmpFile);
                     } else {
                         $this->logger->error("\aportela\RemoteThumbnailCacheWrapper\Thumbnail::saveRemoteURLIntoTemporalFile - Error saving contents into temporal file");
@@ -168,7 +171,7 @@ abstract class Thumbnail
     {
         $thumbnailPath = $this->getThumbnailFullPath();
         if ($force && $this->isCached()) {
-            $this->cache->remove($this->hash);
+            $this->deleteCache();
         }
         if (! $this->isCached()) {
             $temporalPath = $this->saveRemoteURLIntoTemporalFile($url);
@@ -198,7 +201,7 @@ abstract class Thumbnail
     {
         $thumbnailPath = $this->getThumbnailFullPath();
         if ($force && $this->isCached()) {
-            $this->cache->remove($this->hash);
+            $this->deleteCache();
         }
         if (! $this->isCached()) {
             if (file_exists($path)) {
