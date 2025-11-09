@@ -146,7 +146,7 @@ abstract class Thumbnail
             if (in_array($httpResponse->getContentType(), ["image/jpeg", "image/png"])) {
                 $tmpFile = tempnam(sys_get_temp_dir(), uniqid());
                 if (is_string($tmpFile)) {
-                    if (file_put_contents($tmpFile, $httpResponse->body) !== false) {;
+                    if (file_put_contents($tmpFile, $httpResponse->body) !== false) {
                         return ($tmpFile);
                     } else {
                         $this->logger->error(\aportela\RemoteThumbnailCacheWrapper\Thumbnail::class . '::saveRemoteURLIntoTemporalFile - Error saving contents into temporal file');
