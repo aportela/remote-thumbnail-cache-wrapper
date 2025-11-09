@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace aportela\RemoteThumbnailCacheWrapper\Exception;
 
 class InvalidQualityException extends \Exception

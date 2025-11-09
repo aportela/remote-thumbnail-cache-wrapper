@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace aportela\RemoteThumbnailCacheWrapper\Source;
 
 final class URLSource implements \aportela\RemoteThumbnailCacheWrapper\Source\ISource
 {
     private string $url;
+
     private string $hash;
 
     public function __construct(string $url)
@@ -13,12 +16,8 @@ final class URLSource implements \aportela\RemoteThumbnailCacheWrapper\Source\IS
             $this->url = $url;
             $this->hash = sha1($url);
         } else {
-            throw new \InvalidArgumentException("Invalid url: {$url}");
+            throw new \InvalidArgumentException('Invalid url: ' . $url);
         }
-    }
-
-    public function __destruct()
-    {
     }
 
     public function getResource(): string

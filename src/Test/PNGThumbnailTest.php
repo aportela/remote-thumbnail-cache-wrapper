@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace aportela\RemoteThumbnailCacheWrapper\Test;
 
-require_once dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . "vendor" . DIRECTORY_SEPARATOR . "autoload.php";
+require_once dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . "vendor" . DIRECTORY_SEPARATOR . "autoload.php";
 
 final class PNGThumbnailTest extends \aportela\RemoteThumbnailCacheWrapper\Test\BaseTest
 {
@@ -12,17 +12,18 @@ final class PNGThumbnailTest extends \aportela\RemoteThumbnailCacheWrapper\Test\
     {
         $this->expectException(\aportela\RemoteThumbnailCacheWrapper\Exception\InvalidDimensionsException::class);
         $this->expectExceptionMessageMatches("/^Invalid dimensions:.*/");
-        $source = new \aportela\RemoteThumbnailCacheWrapper\Source\LocalFilenameResource(self::LOCAL_FILE_EXISTENT);
-        $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, self::$cachePath, $source);
-        $thumbnail->setDimensions(0, 0, false);
+        $localFilenameResource = new \aportela\RemoteThumbnailCacheWrapper\Source\LocalFilenameResource(self::LOCAL_FILE_EXISTENT);
+        $pngThumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, self::$cachePath, $localFilenameResource);
+        $pngThumbnail->setDimensions(0, 0, false);
     }
 
     public function testValidSetDimensions(): void
     {
-        $source = new \aportela\RemoteThumbnailCacheWrapper\Source\LocalFilenameResource(self::LOCAL_FILE_EXISTENT);
-        $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, self::$cachePath, $source);
-        $thumbnail->setDimensions(640, 480, false);
-        $path = $thumbnail->get();
+        $localFilenameResource = new \aportela\RemoteThumbnailCacheWrapper\Source\LocalFilenameResource(self::LOCAL_FILE_EXISTENT);
+        $pngThumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, self::$cachePath, $localFilenameResource);
+        $pngThumbnail->setDimensions(640, 480, false);
+
+        $path = $pngThumbnail->get();
         $this->assertIsString($path);
         $this->assertFileExists($path);
     }
@@ -31,17 +32,18 @@ final class PNGThumbnailTest extends \aportela\RemoteThumbnailCacheWrapper\Test\
     {
         $this->expectException(\aportela\RemoteThumbnailCacheWrapper\Exception\InvalidQualityException::class);
         $this->expectExceptionMessageMatches("/^Invalid quality:.*/");
-        $source = new \aportela\RemoteThumbnailCacheWrapper\Source\LocalFilenameResource(self::LOCAL_FILE_EXISTENT);
-        $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, self::$cachePath, $source);
-        $thumbnail->setQuality(200, false);
+        $localFilenameResource = new \aportela\RemoteThumbnailCacheWrapper\Source\LocalFilenameResource(self::LOCAL_FILE_EXISTENT);
+        $pngThumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, self::$cachePath, $localFilenameResource);
+        $pngThumbnail->setQuality(200, false);
     }
 
     public function testValidSetQuality(): void
     {
-        $source = new \aportela\RemoteThumbnailCacheWrapper\Source\LocalFilenameResource(self::LOCAL_FILE_EXISTENT);
-        $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, self::$cachePath, $source);
-        $thumbnail->setQuality(50, false);
-        $path = $thumbnail->get();
+        $localFilenameResource = new \aportela\RemoteThumbnailCacheWrapper\Source\LocalFilenameResource(self::LOCAL_FILE_EXISTENT);
+        $pngThumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, self::$cachePath, $localFilenameResource);
+        $pngThumbnail->setQuality(50, false);
+
+        $path = $pngThumbnail->get();
         $this->assertIsString($path);
         $this->assertFileExists($path);
     }
@@ -55,32 +57,32 @@ final class PNGThumbnailTest extends \aportela\RemoteThumbnailCacheWrapper\Test\
 
     public function testRemote404Image(): void
     {
-        $source = new \aportela\RemoteThumbnailCacheWrapper\Source\URLSource(self::REMOTE_URL_NOT_FOUND);
-        $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, self::$cachePath, $source);
-        $this->assertFalse($thumbnail->get());
+        $urlSource = new \aportela\RemoteThumbnailCacheWrapper\Source\URLSource(self::REMOTE_URL_NOT_FOUND);
+        $pngThumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, self::$cachePath, $urlSource);
+        $this->assertFalse($pngThumbnail->get());
     }
 
     public function testRemote200NotImageMime(): void
     {
-        $source = new \aportela\RemoteThumbnailCacheWrapper\Source\URLSource(self::REMOTE_URL_INVALID_IMAGE_MIME_TYPE);
-        $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, self::$cachePath, $source);
-        $this->assertFalse($thumbnail->get());
+        $urlSource = new \aportela\RemoteThumbnailCacheWrapper\Source\URLSource(self::REMOTE_URL_INVALID_IMAGE_MIME_TYPE);
+        $pngThumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, self::$cachePath, $urlSource);
+        $this->assertFalse($pngThumbnail->get());
     }
 
     public function testRemote200ValidImage(): void
     {
-        $source = new \aportela\RemoteThumbnailCacheWrapper\Source\URLSource(self::REMOTE_URL_VALID_IMAGE);
-        $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, self::$cachePath, $source);
-        $path = $thumbnail->get();
+        $urlSource = new \aportela\RemoteThumbnailCacheWrapper\Source\URLSource(self::REMOTE_URL_VALID_IMAGE);
+        $pngThumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, self::$cachePath, $urlSource);
+        $path = $pngThumbnail->get();
         $this->assertIsString($path);
         $this->assertFileExists($path);
     }
 
     public function testRemote200ValidImageForce(): void
     {
-        $source = new \aportela\RemoteThumbnailCacheWrapper\Source\URLSource(self::REMOTE_URL_VALID_IMAGE);
-        $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, self::$cachePath, $source);
-        $path = $thumbnail->get();
+        $urlSource = new \aportela\RemoteThumbnailCacheWrapper\Source\URLSource(self::REMOTE_URL_VALID_IMAGE);
+        $pngThumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, self::$cachePath, $urlSource);
+        $path = $pngThumbnail->get();
         $this->assertIsString($path);
         $this->assertFileExists($path);
     }
@@ -94,18 +96,18 @@ final class PNGThumbnailTest extends \aportela\RemoteThumbnailCacheWrapper\Test\
 
     public function testLocalExistingImage(): void
     {
-        $source = new \aportela\RemoteThumbnailCacheWrapper\Source\LocalFilenameResource(self::LOCAL_FILE_EXISTENT);
-        $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, self::$cachePath, $source);
-        $path = $thumbnail->get();
+        $localFilenameResource = new \aportela\RemoteThumbnailCacheWrapper\Source\LocalFilenameResource(self::LOCAL_FILE_EXISTENT);
+        $pngThumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, self::$cachePath, $localFilenameResource);
+        $path = $pngThumbnail->get();
         $this->assertIsString($path);
         $this->assertFileExists($path);
     }
 
     public function testLocalExistingImageForce(): void
     {
-        $source = new \aportela\RemoteThumbnailCacheWrapper\Source\LocalFilenameResource(self::LOCAL_FILE_EXISTENT);
-        $thumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, self::$cachePath, $source);
-        $path = $thumbnail->get(true);
+        $localFilenameResource = new \aportela\RemoteThumbnailCacheWrapper\Source\LocalFilenameResource(self::LOCAL_FILE_EXISTENT);
+        $pngThumbnail = new \aportela\RemoteThumbnailCacheWrapper\PNGThumbnail(self::$logger, self::$cachePath, $localFilenameResource);
+        $path = $pngThumbnail->get(true);
         $this->assertIsString($path);
         $this->assertFileExists($path);
     }

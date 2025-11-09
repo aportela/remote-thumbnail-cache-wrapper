@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace aportela\RemoteThumbnailCacheWrapper\Source;
 
 final class LocalFilenameResource implements \aportela\RemoteThumbnailCacheWrapper\Source\ISource
 {
     private string $localFilename;
+
     private string $hash;
 
     public function __construct(string $localFilename)
@@ -13,12 +16,8 @@ final class LocalFilenameResource implements \aportela\RemoteThumbnailCacheWrapp
             $this->localFilename = $localFilename;
             $this->hash = sha1($localFilename);
         } else {
-            throw new \InvalidArgumentException("Local filename ({$localFilename}) not found");
+            throw new \InvalidArgumentException(sprintf('Local filename (%s) not found', $localFilename));
         }
-    }
-
-    public function __destruct()
-    {
     }
 
     public function getResource(): string
