@@ -28,7 +28,7 @@ abstract class Thumbnail
 
     public const DEFAULT_THUMBNAIL_HEIGHT = 200;
 
-    public function __construct(protected \Psr\Log\LoggerInterface $logger, string $localBasePath, protected \aportela\RemoteThumbnailCacheWrapper\Source\ISource $source, \aportela\RemoteThumbnailCacheWrapper\ThumbnailType $thumbnailType, int $quality, int $width, int $height, null|int|\DateInterval $ttl = null)
+    public function __construct(protected \Psr\Log\LoggerInterface $logger, string $localBasePath, protected \aportela\RemoteThumbnailCacheWrapper\Source\ISource $source, \aportela\RemoteThumbnailCacheWrapper\ThumbnailType $thumbnailType, int $quality, int $width, int $height, int|\DateInterval|null $ttl = null)
     {
         switch ($thumbnailType) {
             case \aportela\RemoteThumbnailCacheWrapper\ThumbnailType::JPG:
